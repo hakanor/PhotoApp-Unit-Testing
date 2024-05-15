@@ -18,7 +18,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.windowScene = windowScene
         
         // set rootViewController
-        window?.rootViewController = ViewController()
+        window?.rootViewController = SignupViewController()
         window?.makeKeyAndVisible()
         
     }

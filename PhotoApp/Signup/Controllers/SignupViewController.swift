@@ -1,0 +1,116 @@
+//
+//  ViewController.swift
+//  PhotoApp
+//
+//  Created by Hakan Or on 10.05.2024.
+//
+
+import UIKit
+
+final class SignupViewController: UIViewController {
+    
+    var signupPresenter: SignupPresenterProtocol?
+
+    lazy var stackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.axis = .vertical
+        stackView.spacing = 10
+        stackView.distribution = .fillEqually
+        return stackView
+    }()
+    
+    lazy var userFirstNameTextField: UITextField = {
+        let textField = UITextField()
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.borderStyle = .roundedRect
+        return textField
+    }()
+    
+    lazy var lastNameTextField: UITextField = {
+        let textField = UITextField()
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.borderStyle = .roundedRect
+        return textField
+    }()
+    
+    lazy var emailTextField: UITextField = {
+        let textField = UITextField()
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.borderStyle = .roundedRect
+        return textField
+    }()
+    
+    lazy var passwordTextField: UITextField = {
+        let textField = UITextField()
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.borderStyle = .roundedRect
+        return textField
+    }()
+    
+    lazy var repeatPasswordTextField: UITextField = {
+        let textField = UITextField()
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.borderStyle = .roundedRect
+        return textField
+    }()
+    
+    lazy var signupButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("Button", for: .normal)
+        button.backgroundColor = .black
+        button.addTarget(self, action: #selector(signupButtonTapped), for: .touchUpInside)
+        return button
+    }()
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        configureUI()
+        
+        if signupPresenter == nil {
+            let signupModelValidator = SignupFormModelValidator()
+            let webservice = SignupWebService(urlString: SignupConstants.signupURLString)
+            signupPresenter = SignupPresenter(formModelValidator: signupModelValidator, webservice: webservice, delegate: self)
+        }
+    }
+    
+    private func configureUI() {
+        view.backgroundColor = .systemGray2
+        view.addSubview(stackView)
+        
+        NSLayoutConstraint.activate([
+            stackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
+            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
+            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10)
+        ])
+        
+        [userFirstNameTextField, lastNameTextField, emailTextField, passwordTextField, repeatPasswordTextField, signupButton].forEach { view in
+            stackView.addArrangedSubview(view)
+            NSLayoutConstraint.activate([
+                view.heightAnchor.constraint(equalToConstant: 50)
+            ])
+        }
+    }
+    
+    @objc func signupButtonTapped() {
+        let formModel = SignupFormModel(firstName: userFirstNameTextField.text ?? "",
+                                        lastName: lastNameTextField.text ?? "",
+                                        email: emailTextField.text ?? "",
+                                        password: passwordTextField.text ?? "",
+                                        repeatPassword: repeatPasswordTextField.text ?? "")
+        signupPresenter?.processUserSignup(formModel: formModel)
+    }
+}
+
+extension SignupViewController: SignupViewDelegateProtocol {
+    func successfullSignup() {
+        // TODO: -
+    }
+    
+    func errorHandler(error: SignupError) {
+        // TODO: -
+    }
+    
+    
+}
