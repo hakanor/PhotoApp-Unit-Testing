@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol SignupView: AnyObject {
+    func displayAlert(title: String, message: String, accessibilityIdentifier: String)
+}
+
 final class SignupViewController: UIViewController {
     
     var signupPresenter: SignupPresenterProtocol?
@@ -74,12 +78,6 @@ final class SignupViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
-        
-        if signupPresenter == nil {
-            let signupModelValidator = SignupFormModelValidator()
-            let webservice = SignupWebService(urlString: SignupConstants.signupURLString)
-            signupPresenter = SignupPresenter(formModelValidator: signupModelValidator, webservice: webservice, delegate: self)
-        }
     }
     
     private func configureUI() {
@@ -110,26 +108,14 @@ final class SignupViewController: UIViewController {
     }
 }
 
-extension SignupViewController: SignupViewDelegateProtocol {
-    func successfullSignup() {
-        let alert = UIAlertController(title: "Success", message: "The signup operation was successful successful", preferredStyle: .alert)
+extension SignupViewController: SignupView {
+    func displayAlert(title: String, message: String, accessibilityIdentifier: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         
         DispatchQueue.main.async {
-            alert.view.accessibilityIdentifier = "successAlertDialog"
+            alert.view.accessibilityIdentifier = accessibilityIdentifier
             self.present(alert, animated: true)
         }
     }
-    
-    func errorHandler(error: SignupError) {
-        let alert = UIAlertController(title: "Error", message: error.errorDescription, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
-        
-        DispatchQueue.main.async {
-            alert.view.accessibilityIdentifier = "errorAlertDialog"
-            self.present(alert, animated: true)
-        }
-    }
-    
-    
 }
