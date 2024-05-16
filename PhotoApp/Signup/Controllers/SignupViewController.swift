@@ -24,6 +24,8 @@ final class SignupViewController: UIViewController {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.borderStyle = .roundedRect
+        textField.placeholder = "First name:"
+        textField.accessibilityIdentifier = "firstNameTextField"
         return textField
     }()
     
@@ -31,6 +33,7 @@ final class SignupViewController: UIViewController {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.borderStyle = .roundedRect
+        textField.placeholder = "Last name:"
         return textField
     }()
     
@@ -38,6 +41,7 @@ final class SignupViewController: UIViewController {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.borderStyle = .roundedRect
+        textField.placeholder = "Email:"
         return textField
     }()
     
@@ -45,6 +49,7 @@ final class SignupViewController: UIViewController {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.borderStyle = .roundedRect
+        textField.placeholder = "Password:"
         return textField
     }()
     
@@ -52,14 +57,16 @@ final class SignupViewController: UIViewController {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.borderStyle = .roundedRect
+        textField.placeholder = "Repeat password:"
         return textField
     }()
     
     lazy var signupButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Button", for: .normal)
-        button.backgroundColor = .black
+        button.setTitle("Signup", for: .normal)
+        button.backgroundColor = .systemGreen
+        button.configuration?.cornerStyle = .capsule
         button.addTarget(self, action: #selector(signupButtonTapped), for: .touchUpInside)
         return button
     }()
@@ -76,7 +83,7 @@ final class SignupViewController: UIViewController {
     }
     
     private func configureUI() {
-        view.backgroundColor = .systemGray2
+        view.backgroundColor = .systemGray3
         view.addSubview(stackView)
         
         NSLayoutConstraint.activate([
@@ -105,11 +112,23 @@ final class SignupViewController: UIViewController {
 
 extension SignupViewController: SignupViewDelegateProtocol {
     func successfullSignup() {
-        // TODO: -
+        let alert = UIAlertController(title: "Success", message: "The signup operation was successful successful", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        
+        DispatchQueue.main.async {
+            alert.view.accessibilityIdentifier = "successAlertDialog"
+            self.present(alert, animated: true)
+        }
     }
     
     func errorHandler(error: SignupError) {
-        // TODO: -
+        let alert = UIAlertController(title: "Error", message: error.errorDescription, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        
+        DispatchQueue.main.async {
+            alert.view.accessibilityIdentifier = "errorAlertDialog"
+            self.present(alert, animated: true)
+        }
     }
     
     

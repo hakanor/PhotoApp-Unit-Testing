@@ -12,10 +12,13 @@ enum SignupError: LocalizedError, Equatable {
     case invalidResponseModel
     case invalidRequestURLString
     case failedRequest(description: String)
+    case invalidTextField(description: String)
     
     var errorDescription: String? {
         switch self {
         case .failedRequest(let description):
+            return description
+        case .invalidTextField(let description):
             return description
         case .invalidResponseModel, .invalidRequestURLString:
             return ""
