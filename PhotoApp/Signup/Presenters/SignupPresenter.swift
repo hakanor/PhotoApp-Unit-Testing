@@ -11,40 +11,59 @@ class SignupPresenter: SignupPresenterProtocol {
     
     private var formModelValidator: SignupModelValidatorProtocol
     private var webservice: SignupWebServiceProtocol
-    private weak var delegate: SignupViewDelegateProtocol?
+    weak var view: SignupView?
     
-    required init(formModelValidator: SignupModelValidatorProtocol, 
-         webservice: SignupWebServiceProtocol,
-         delegate: SignupViewDelegateProtocol
+    init(formModelValidator: SignupModelValidatorProtocol,
+         webservice: SignupWebServiceProtocol
     ){
         self.formModelValidator = formModelValidator
         self.webservice = webservice
-        self.delegate = delegate
     }
     
     func processUserSignup(formModel: SignupFormModel) {
         
         if !formModelValidator.isFirstNameValid(firstName: formModel.firstName) {
-            delegate?.errorHandler(error: .invalidTextField(description: "isFirstNameValid"))
+            view?.displayAlert(
+                title: "Error",
+                message: "isFirstNameValid",
+                accessibilityIdentifier: "errorAlertDialog"
+            )
             return
         }
         
         if !formModelValidator.isLastNameValid(lastName: formModel.lastName) {
-            delegate?.errorHandler(error: .invalidTextField(description: "isLastNameValid"))
+            view?.displayAlert(
+                title: "Error",
+                message: "isLastNameValid",
+                accessibilityIdentifier: "errorAlertDialog"
+            )
             return
         }
         
         if !formModelValidator.isValidEmailFormat(email: formModel.email) {
-            delegate?.errorHandler(error: .invalidTextField(description: "isValidEmailFormat"))
+            view?.displayAlert(
+                title: "Error",
+                message: "isValidEmailFormat",
+                accessibilityIdentifier: "errorAlertDialog"
+            )
             return
         }
         
         if !formModelValidator.isPasswordValid(password: formModel.password) {
-            delegate?.errorHandler(error: .invalidTextField(description: "isPasswordValid"))
+            view?.displayAlert(
+                title: "Error",
+                message: "isPasswordValid",
+                accessibilityIdentifier: "errorAlertDialog"
+            )
             return
         }
+        
         if !formModelValidator.doPasswordsMatch(password: formModel.password, repeatPassword: formModel.repeatPassword) {
-            delegate?.errorHandler(error: .invalidTextField(description: "doPasswordsMatch"))
+            view?.displayAlert(
+                title: "Error",
+                message: "doPasswordsMatch",
+                accessibilityIdentifier: "errorAlertDialog"
+            )
             return
         }
         
@@ -55,10 +74,17 @@ class SignupPresenter: SignupPresenterProtocol {
         
         webservice.signup(withForm: requestModel) { [weak self] (responseModel, error) in
             if let error = error {
-                self?.delegate?.errorHandler(error: error)
-                return
+                self?.view?.displayAlert(
+                    title: "Error",
+                    message: error.errorDescription ?? "Error",
+                    accessibilityIdentifier: "errorAlertDialog"
+                )
             } else {
-                self?.delegate?.successfullSignup()
+                self?.view?.displayAlert(
+                    title: "Success",
+                    message: "The signup operation was successful successful",
+                    accessibilityIdentifier: "successAlertDialog"
+                )
             }
         }
     }

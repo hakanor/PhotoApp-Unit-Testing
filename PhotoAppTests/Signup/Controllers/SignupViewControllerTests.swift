@@ -34,11 +34,8 @@ final class SignupViewControllerTests: XCTestCase {
         // Arrange
         let mockSignupModelValidator = MockSignupModelValidator()
         let mockSignupWebService = MockSignupWebService()
-        let mockSignupViewDelegate = MockSignupViewDelegate()
         
-        let mockSignupPresenter = MockSignupPresenter(formModelValidator: mockSignupModelValidator,
-                                                      webservice: mockSignupWebService,
-                                                      delegate: mockSignupViewDelegate)
+        let mockSignupPresenter = MockSignupPresenter()
         
         sut.signupPresenter = mockSignupPresenter
         
